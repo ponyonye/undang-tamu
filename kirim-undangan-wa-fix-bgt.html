@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kirim Undangan WA — Malinda & Fahmi</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #e2dfd9;
+    --border-hover: #b8b4ac;
+    --text: #1c1c1c;
+    --muted: #6b6860;
+    --hint: #a09c96;
+    --green: #2e7d32;
+    --green-bg: #f1f8e9;
+    --green-bd: #a5d6a7;
+    --green-txt: #1b5e20;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --red-bd: #ef9a9a;
+    --blue-bg: #e8f0fe;
+    --blue-txt: #1a3a6b;
+    --r: 12px; --rsm: 8px; --rxs: 6px;
+  }
+  body {
+    font-family: system-ui,-apple-system,'Segoe UI',sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; padding: 24px 16px 80px; font-size: 14px; line-height: 1.6;
+  }
+  .container { max-width: 700px; margin: 0 auto; }
+  .app-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 3px; }
+  .app-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+
+  .step { display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }
+  .step-num {
+    width:28px; height:28px; border-radius:50%; background:var(--text); color:#fff;
+    font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:1px;
+  }
+  .step-title { font-size:14px; font-weight:600; }
+  .step-desc { font-size:12px; color:var(--muted); margin-top:1px; }
+
+  .card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--r); padding:18px 20px; margin-bottom:24px;
+  }
+  .field { margin-bottom:14px; }
+  .field:last-child { margin-bottom:0; }
+  label { display:block; font-size:11px; font-weight:700; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.05em; }
+  input[type=text], textarea {
+    width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--rsm);
+    font-size:13px; font-family:inherit; color:var(--text); background:var(--surface);
+    outline:none; transition:border-color .15s; line-height:1.5;
+  }
+  input[type=text]:focus, textarea:focus { border-color:#888; box-shadow:0 0 0 3px rgba(0,0,0,.05); }
+  textarea { resize:vertical; }
+
+  .tip {
+    margin-top:7px; padding:8px 11px; background:var(--blue-bg);
+    border-radius:var(--rxs); font-size:12px; color:var(--blue-txt); line-height:1.6;
+  }
+  .tip b { font-weight:600; }
+
+  .preview-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:5px; margin-top:15px;}
+  .preview-box {
+    background:var(--bg); border:1px solid var(--border); border-radius:var(--rsm);
+    padding:11px 13px; font-size:12.5px; line-height:1.75; color:var(--text);
+    white-space:pre-wrap; word-break:break-word; min-height:44px;
+  }
+
+  /* Tamu input rows */
+  .tamu-header {
+    display:grid; grid-template-columns:1fr 160px 140px 36px;
+    gap:8px; padding-bottom:7px; border-bottom:1px solid var(--border); margin-bottom:8px;
+  }
+  .tamu-header span { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  .tamu-rows { display:flex; flex-direction:column; gap:7px; }
+  .tamu-row {
+    display:grid; grid-template-columns:1fr 160px 140px 36px;
+    gap:8px; align-items:center;
+  }
+  .tamu-row input { margin:0; }
+  .btn-del {
+    width:34px; height:34px; border-radius:var(--rxs); border:1px solid var(--border);
+    background:var(--surface); cursor:pointer; display:flex; align-items:center;
+    justify-content:center; color:var(--hint); transition:all .15s; flex-shrink:0;
+  }
+  .btn-del:hover { background:var(--red-bg); border-color:var(--red-bd); color:var(--red); }
+
+  .btn-add {
+    display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px;
+    padding:9px 14px; border-radius:var(--rsm); border:1.5px dashed var(--border-hover);
+    background:transparent; font-size:13px; font-weight:500; color:var(--muted);
+    cursor:pointer; font-family:inherit; transition:all .15s; width:100%;
+  }
+  .btn-add:hover { background:var(--bg); color:var(--text); border-color:var(--text); }
+
+  /* Buttons */
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    padding:11px 20px; border-radius:var(--rsm); border:1px solid var(--border);
+    background:var(--surface); font-size:13px; font-weight:600; cursor:pointer;
+    color:var(--text); font-family:inherit; transition:all .15s; line-height:1;
+  }
+  .btn:hover { background:var(--bg); border-color:var(--border-hover); }
+  .btn:active { transform:scale(.98); }
+  .btn-dark { background:var(--text); color:#fff; border-color:var(--text); width:100%; }
+  .btn-dark:hover { background:#333; border-color:#333; }
+  .btn-green { background:var(--green); color:#fff; border-color:var(--green); flex:1; }
+  .btn-green:hover { background:#1b5e20; border-color:#1b5e20; }
+  .btn-green:disabled { background:#a5d6a7; border-color:#a5d6a7; cursor:not-allowed; }
+
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+  .stat { background:var(--bg); border:1px solid var(--border); border-radius:var(--rsm); padding:12px 8px; text-align:center; }
+  .stat .n { font-size:1.7rem; font-weight:600; line-height:1; }
+  .stat .l { font-size:11px; color:var(--muted); margin-top:3px; }
+  .n-green { color:var(--green); }
+
+  .prog-wrap { margin-bottom:14px; }
+  .prog-info { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:5px; }
+  .prog-bar { height:5px; background:var(--border); border-radius:5px; overflow:hidden; }
+  .prog-fill { height:100%; background:var(--green); border-radius:5px; transition:width .3s; }
+  .action-row { display:flex; gap:8px; margin-bottom:14px; }
+
+  .list { display:flex; flex-direction:column; gap:6px; max-height:400px; overflow-y:auto; padding-right:2px; }
+  .list::-webkit-scrollbar { width:4px; }
+  .list::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+
+  .item {
+    display:flex; align-items:flex-start; gap:10px; padding:10px 12px;
+    border:1px solid var(--border); border-radius:var(--rsm); background:var(--surface);
+    transition:border-color .2s, background .2s;
+  }
+  .item.sent { border-color:var(--green-bd); background:var(--green-bg); }
+  .item-num { font-size:11px; color:var(--hint); min-width:20px; padding-top:2px; text-align:right; }
+  .item-body { flex:1; min-width:0; }
+  .item-name { font-size:13px; font-weight:600; }
+  .item-partner { font-size:12px; color:var(--muted); font-weight:400; }
+  .item-wa { font-size:11px; color:var(--hint); margin-top:1px; }
+  .item-link { font-size:10px; font-family:'Courier New',monospace; color:var(--hint); margin-top:4px; word-break:break-all; background:var(--bg); padding:3px 6px; border-radius:4px; border:1px solid var(--border); display:inline-block; }
+  .btn-kirim {
+    flex-shrink:0; display:inline-flex; align-items:center; gap:4px;
+    padding:6px 12px; border-radius:var(--rxs); border:1px solid var(--border);
+    background:var(--surface); font-size:12px; font-weight:600; cursor:pointer;
+    color:var(--text); font-family:inherit; transition:all .15s; white-space:nowrap;
+  }
+  .btn-kirim:hover { background:var(--green-bg); border-color:var(--green-bd); color:var(--green-txt); }
+  .btn-kirim.done { background:var(--green-bg); border-color:var(--green-bd); color:var(--green-txt); }
+
+  .sep { height:1px; background:var(--border); margin:0 0 24px; }
+
+  @media (max-width:560px) {
+    .tamu-header { grid-template-columns:1fr 120px 36px; }
+    .tamu-header span:nth-child(3) { display:none; }
+    .tamu-row { grid-template-columns:1fr 120px 36px; }
+    .tamu-row .r-pas { display:none; }
+    .card { padding:14px 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <p class="app-title">Kirim Undangan WA</p>
+  <p class="app-sub">Malinda &amp; Fahmi · 25 April 2026 — Klik dua kali file ini, langsung jalan di browser.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-num">1</div>
+    <div>
+      <div class="step-title">Domain website undangan</div>
+      <div class="step-desc">Alamat website yang sudah diupload ke hosting</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label>Alamat website</label>
+      <input type="text" id="domain" value="ponyonye.my.id"/>
+      <div class="tip">Isi tanpa https:// — contoh: <b>ponyonye.my.id</b></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-num">2</div>
+    <div>
+      <div class="step-title">Template pesan WhatsApp</div>
+      <div class="step-desc">Teks default telah disediakan. Anda masih bisa mengeditnya.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label>Isi pesan</label>
+      <textarea id="template" rows="15">Assalamualaikum Warahmatullahi Wabarakatuh
+
+Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i
+
+*{Nama Tamu} & {Pasangan}*
+
+untuk menghadiri acara pernikahan kami.
+
+Akad & Resepsi
+Sabtu, 25 April 2026
+Villa Padurenan Indah 2
+Mustika Jaya, Kota Bekasi
+
+Berikut link undangan kami untuk informasi lengkap acara:
+{Link} 
+
+Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i
+{Nama Tamu} & {Pasangan} berkenan hadir dan memberikan doa restu.
+
+Mohon maaf apabila undangan ini hanya disampaikan melalui pesan ini.
+Atas perhatian dan kehadirannya, kami ucapkan terima kasih.
+
+Wassalamualaikum Warahmatullahi Wabarakatuh
+
+Salam hormat,
+Malinda & Fahmi</textarea>
+    </div>
+    <div class="field">
+      <div class="preview-label">Preview pesan (contoh: Budi Santoso &amp; Keluarga)</div>
+      <div class="preview-box" id="preview-box"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-num">3</div>
+    <div>
+      <div class="step-title">Daftar tamu</div>
+      <div class="step-desc">Isi satu baris per tamu — nomor WA &amp; pasangan boleh dikosongkan</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="tamu-header">
+      <span>Nama tamu</span>
+      <span>Nomor WhatsApp</span>
+      <span>Pasangan / Keluarga</span>
+      <span></span>
+    </div>
+    <div class="tamu-rows" id="tamu-rows"></div>
+    <button class="btn-add" onclick="addRow()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Tambah tamu
+    </button>
+    <div class="tip" style="margin-top:12px;">
+      <b>Nomor WA</b> pakai format internasional: <b>628</b>xxxxxxxxx (ganti 0 di depan jadi 62) &nbsp;·&nbsp;
+      Kolom <b>Pasangan</b> kosong = otomatis <b>Keluarga</b>
+    </div>
+    <button class="btn btn-dark" style="margin-top:14px;" onclick="generate()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Buat daftar undangan
+    </button>
+  </div>
+
+  <!-- STEP 4 -->
+  <div id="result-section" style="display:none;">
+    <div class="sep"></div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Kirim undangan satu per satu</div>
+        <div class="step-desc">Klik "Kirim WA" → WA terbuka dengan pesan sudah terisi → tinggal tekan Send</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="stats">
+        <div class="stat"><div class="n" id="st-total">0</div><div class="l">Total tamu</div></div>
+        <div class="stat"><div class="n n-green" id="st-sent">0</div><div class="l">Terkirim</div></div>
+        <div class="stat"><div class="n" id="st-sisa">0</div><div class="l">Belum kirim</div></div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-info"><span>Progress pengiriman</span><span id="prog-pct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-green" id="btn-next" onclick="kirimBerikutnya()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>
+          Kirim ke tamu berikutnya
+        </button>
+        <button class="btn" onclick="resetSent()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+          Reset
+        </button>
+      </div>
+      <div class="list" id="tamu-list"></div>
+    </div>
+  </div>
+
+</div>
+<script>
+  let tamu = [], sent = new Set(), rowId = 0;
+
+  function getDomain(){
+    return (document.getElementById('domain').value||'ponyonye.my.id')
+      .replace(/^https?:\/\//,'').replace(/\/$/,'');
+  }
+  function buildLink(nama, pasangan){
+    return 'https://'+getDomain()
+      +'/?to='+encodeURIComponent(nama)
+      +'&to2='+encodeURIComponent(pasangan||'Keluarga');
+  }
+  // Diupdate untuk mendukung format {Nama Tamu}, {Pasangan}, dan {Link}
+  function buildPesan(nama, pasangan){
+    return document.getElementById('template').value
+      .replace(/{Nama Tamu}/ig, nama)
+      .replace(/{Pasangan}/ig,  pasangan||'Keluarga')
+      .replace(/{Link}/ig,      buildLink(nama, pasangan));
+  }
+  function updatePreview(){
+    const b = document.getElementById('preview-box');
+    if(b) b.textContent = buildPesan('Budi Santoso','Keluarga');
+  }
+  
+  document.getElementById('template').addEventListener('input', updatePreview);
+  document.getElementById('domain').addEventListener('input', updatePreview);
+
+  function addRow(nama='', wa='', pasangan=''){
+    const id = rowId++;
+    const div = document.createElement('div');
+    div.className = 'tamu-row'; div.id = 'row-'+id;
+    div.innerHTML =
+      `<input type="text" class="r-nama" placeholder="Contoh: Budi Santoso" value="${esc(nama)}"/>` +
+      `<input type="text" class="r-wa"   placeholder="628xxxxxxxxx"         value="${esc(wa)}"/>` +
+      `<input type="text" class="r-pas"  placeholder="Keluarga"             value="${esc(pasangan)}"/>` +
+      `<button class="btn-del" onclick="delRow(${id})" title="Hapus tamu ini">` +
+        `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">` +
+        `<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>` +
+        `<path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>` +
+      `</button>`;
+    document.getElementById('tamu-rows').appendChild(div);
+  }
+
+  function delRow(id){
+    const el = document.getElementById('row-'+id);
+    if(el) el.remove();
+  }
+
+  function generate(){
+    const rows = document.querySelectorAll('.tamu-row');
+    if(!rows.length){ alert('Tambah tamu dulu!'); return; }
+    tamu = []; sent = new Set(); let idx = 0;
+    rows.forEach(row => {
+      const nama     = row.querySelector('.r-nama').value.trim();
+      const wa       = row.querySelector('.r-wa').value.trim().replace(/\D/g,'');
+      const pasangan = row.querySelector('.r-pas').value.trim() || 'Keluarga';
+      if(nama) tamu.push({id:idx++, nama, wa, pasangan});
+    });
+    if(!tamu.length){ alert('Nama tamu tidak boleh kosong!'); return; }
+    const btn = document.getElementById('btn-next');
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg> Kirim ke tamu berikutnya`;
+    btn.disabled = false;
+    render();
+    document.getElementById('result-section').style.display = 'block';
+    setTimeout(()=>document.getElementById('result-section').scrollIntoView({behavior:'smooth'}), 100);
+  }
+
+  function waUrl(wa, pesan){
+    const enc = encodeURIComponent(pesan);
+    return wa ? 'https://wa.me/'+wa+'?text='+enc : 'https://wa.me/?text='+enc;
+  }
+  function kirimSatu(id){
+    const t = tamu.find(x=>x.id===id); if(!t) return;
+    window.open(waUrl(t.wa, buildPesan(t.nama, t.pasangan)),'_blank');
+    sent.add(id); render();
+  }
+  function kirimBerikutnya(){
+    const belum = tamu.filter(t=>!sent.has(t.id));
+    if(!belum.length){
+      const btn = document.getElementById('btn-next');
+      btn.textContent = 'Semua sudah terkirim!'; btn.disabled = true; return;
+    }
+    kirimSatu(belum[0].id);
+  }
+  function resetSent(){
+    sent = new Set();
+    const btn = document.getElementById('btn-next');
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg> Kirim ke tamu berikutnya`;
+    btn.disabled = false; render();
+  }
+  function render(){
+    const total = tamu.length, terkirim = sent.size;
+    const pct = total ? Math.round(terkirim/total*100) : 0;
+    document.getElementById('st-total').textContent = total;
+    document.getElementById('st-sent').textContent  = terkirim;
+    document.getElementById('st-sisa').textContent  = total-terkirim;
+    document.getElementById('prog').style.width     = pct+'%';
+    document.getElementById('prog-pct').textContent = pct+'%';
+    document.getElementById('tamu-list').innerHTML = tamu.map(t=>{
+      const done = sent.has(t.id);
+      return `<div class="item ${done?'sent':''}">
+        <span class="item-num">${t.id+1}</span>
+        <div class="item-body">
+          <div class="item-name">${esc(t.nama)} <span class="item-partner">&amp; ${esc(t.pasangan)}</span></div>
+          <div class="item-wa">${t.wa?'+'+t.wa:'Nomor WA tidak diisi'}</div>
+          <div class="item-link">${buildLink(t.nama,t.pasangan)}</div>
+        </div>
+        <button class="btn-kirim ${done?'done':''}" onclick="kirimSatu(${t.id})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg>
+          ${done?'Terkirim':'Kirim WA'}
+        </button>
+      </div>`;
+    }).join('');
+  }
+  function esc(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  addRow();
+  updatePreview();
+</script>
+</body>
+</html>
